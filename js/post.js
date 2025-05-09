@@ -1,19 +1,5 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const form = document.getElementById('postForm');
-
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    const title = document.getElementById('title').value.trim();
-    const content = document.getElementById('content').value.trim();
-    const imageInput = document.getElementById('image');
-    const username = localStorage.getItem('username') || "Anonymous";
-
-    if (!title || !content) {
-      alert("Title and content are required.");
       return;
     }
-
     const post = {
       id: Date.now(),
       title,
@@ -22,24 +8,23 @@ document.addEventListener('DOMContentLoaded', () => {
       createdAt: new Date().toISOString(),
       image: null // will set below if needed
     };
-
-    const reader = new FileReader();
+    // Handle image upload
     if (imageInput.files && imageInput.files[0]) {
+      const reader = new FileReader();
       reader.onload = function (event) {
-        post.image = event.target.result;
+        post.image = event.target.result; // Set the image data
         savePost(post);
       };
-      reader.readAsDataURL(imageInput.files[0]); // convert to base64
+      reader.readAsDataURL(imageInput.files[0]); // Convert to base64
     } else {
-      savePost(post);
+      savePost(post); // Save post without image
     }
   });
-
   function savePost(post) {
     const posts = JSON.parse(localStorage.getItem('posts')) || [];
-    posts.unshift(post); // newest post on top
+    posts.unshift(post); // Add the newest post to the top
     localStorage.setItem('posts', JSON.stringify(posts));
     alert("Post created!");
-    window.location.href = "index.html"; // Go back to forum view
+    window.location.href = "index.html"; // Redirect to forum view
   }
 });
